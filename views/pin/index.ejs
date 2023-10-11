@@ -1,0 +1,105 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Create Pin</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Pin</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <section class="content">
+    <div class="row">
+      <div class="col-md-9">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Create Pin</h3>
+
+            <div class="card-tools">
+              <button
+                type="button"
+                class="btn btn-tool"
+                data-card-widget="collapse"
+                title="Collapse"
+              >
+                <i class="fas fa-minus"></i>
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="alert alert-success"
+            id="successMessage"
+            style="display: none"
+          >
+            <strong>Success!</strong>
+          </div>
+          <div
+            class="alert alert-danger"
+            id="errorsMessage"
+            style="display: none"
+          >
+            <strong>error</strong>
+          </div>
+          <div class="card-body">
+            <form enctype="multipart/form-data" method="post" id="storePinForm">
+              <div class="form-group">
+                <label for="inputName"> Upload Excel</label>
+                <input
+                  type="file"
+                  id="pinExcel"
+                  name="pinExcel"
+                  class="form-control"
+                  accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                />
+              </div>
+              <div class="card-footer">
+                <button id="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  $(document).ready(function () {
+    $('#storePinForm').submit(function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+
+      $.ajax({
+        type: 'post',
+        url: '/store/pin',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+          $('#successMessage').fadeIn(); // Show the success message
+          setTimeout(function () {
+            $('#successMessage').fadeOut(); // Hide the success message after a delay (e.g., 3 seconds)
+          }, 3000);
+        },
+        error: function (error) {
+          $('#errorsMessage').fadeIn(); // Show the success message
+          setTimeout(function () {
+            $('#errorsMessage').fadeOut(); // Hide the success message after a delay (e.g., 3 seconds)
+          }, 3000);
+        },
+      });
+    });
+  });
+</script>

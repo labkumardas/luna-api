@@ -1,0 +1,230 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Create Banner</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Banner</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <section class="content">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Create Category</h3>
+
+            <div class="card-tools">
+              <button
+                type="button"
+                class="btn btn-tool"
+                data-card-widget="collapse"
+                title="Collapse"
+              >
+                <i class="fas fa-minus"></i>
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="alert alert-success"
+            id="successMessage"
+            style="display: none"
+          >
+            <strong>Success!</strong>
+          </div>
+          <div
+            class="alert alert-danger"
+            id="errorsMessage"
+            style="display: none"
+          >
+            <strong>error</strong>
+          </div>
+          <div class="card-body">
+            <form
+              enctype="multipart/form-data"
+              method="post"
+              id="storeCategory"
+            >
+              <div class="form-group">
+                <label for="inputName"> Title</label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  class="form-control"
+                />
+              </div>
+
+              <div class="card-footer">
+                <button id="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+
+      <div class="col-md-6">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Create Sub-Category</h3>
+
+            <div class="card-tools">
+              <button
+                type="button"
+                class="btn btn-tool"
+                data-card-widget="collapse"
+                title="Collapse"
+              >
+                <i class="fas fa-minus"></i>
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="alert alert-success"
+            id="successMessage2"
+            style="display: none"
+          >
+            <strong>Success!</strong>
+          </div>
+          <div
+            class="alert alert-danger"
+            id="errorsMessage2"
+            style="display: none"
+          >
+            <strong>error</strong>
+          </div>
+          <div class="card-body">
+            <form
+              enctype="multipart/form-data"
+              method="post"
+              id="storeSubCategory"
+            >
+              <div class="form-group">
+                <label for="inputName"> Select Category</label>
+                <select
+                  class="form-control"
+                  name="categorySelect"
+                  id="categorySelect"
+                >
+                  <% response.forEach(function(data, index){ %>
+
+                  <option value="<%= data.id %>"><%= data.name %></option>
+
+                  <% } ) %>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="inputName"> Title</label>
+                <input type="text" id="name" name="name" class="form-control" />
+              </div>
+
+              <div class="card-footer">
+                <button id="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+  $(document).ready(function () {
+    $('#storeCategory').submit(function (e) {
+      e.preventDefault();
+      var formData = {
+        title: $('#title').val(),
+      };
+      console.log(formData);
+      $.ajax({
+        type: 'post',
+        url: '/store/category',
+        data: formData,
+        dataType: 'json',
+        encode: true,
+        success: function (response) {
+          $('#successMessage')
+            .removeClass('alert-danger') // Remove any previous error styling
+            .addClass('alert-success') // Add success styling (or customize as needed)
+            .text(response.message) // Display the message from the server
+            .fadeIn(); // Show the message
+
+          setTimeout(function () {
+            $('#successMessage').fadeOut(); // Hide the message after a delay (e.g., 3 seconds)
+          }, 3000); // Adjust the delay (in milliseconds) as needed
+        },
+        error: function (error) {
+          $('#errorsMessage')
+            .removeClass('alert-danger') // Remove any previous error styling
+            .addClass('alert-danger') // Add success styling (or customize as needed)
+            .text(response.message) // Display the message from the server
+            .fadeIn(); // Show the message
+
+          setTimeout(function () {
+            $('#errorsMessage').fadeOut(); // Hide the message after a delay (e.g., 3 seconds)
+          }, 3000); // Adjust the delay (in milliseconds) as needed
+        },
+      });
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    $('#storeSubCategory').submit(function (e) {
+      e.preventDefault();
+      var formData = {
+        name: $('#name').val(),
+        categorySelect: $('#categorySelect').val(),
+      };
+      console.log(formData);
+      $.ajax({
+        type: 'post',
+        url: '/store/sub-category',
+        data: formData,
+        dataType: 'json',
+        encode: true,
+        success: function (response) {
+          $('#successMessage2')
+            .removeClass('alert-danger') // Remove any previous error styling
+            .addClass('alert-success') // Add success styling (or customize as needed)
+            .text(response.message) // Display the message from the server
+            .fadeIn(); // Show the message
+
+          setTimeout(function () {
+            $('#successMessage2').fadeOut(); // Hide the message after a delay (e.g., 3 seconds)
+          }, 3000); // Adjust the delay (in milliseconds) as needed
+          location.reload(true);
+        },
+        error: function (error) {
+          $('#errorsMessage2')
+            .removeClass('alert-danger') // Remove any previous error styling
+            .addClass('alert-danger') // Add success styling (or customize as needed)
+            .text(response.message) // Display the message from the server
+            .fadeIn(); // Show the message
+
+          setTimeout(function () {
+            $('#errorsMessage2').fadeOut(); // Hide the message after a delay (e.g., 3 seconds)
+          }, 3000); // Adjust the delay (in milliseconds) as needed
+          location.reload(true);
+        },
+      });
+    });
+  });
+</script>

@@ -1,0 +1,221 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Create Service</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Service</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <section class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Create Service</h3>
+
+            <div class="card-tools">
+              <button
+                type="button"
+                class="btn btn-tool"
+                data-card-widget="collapse"
+                title="Collapse"
+              >
+                <i class="fas fa-minus"></i>
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="alert alert-success"
+            id="successMessage"
+            style="display: none"
+          >
+            <strong>Success!</strong>
+          </div>
+          <div
+            class="alert alert-danger"
+            id="errorsMessage"
+            style="display: none"
+          >
+            <strong>error</strong>
+          </div>
+          <div class="card-body">
+            <form enctype="multipart/form-data" method="post" id="storeService">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="inputName"> Title</label>
+                    <input
+                      type="text"
+                      id="title"
+                      name="title"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="inputName"> Property Type</label>
+                    <select
+                      name="property_type"
+                      id="property_type"
+                      class="form-control"
+                    >
+                      <option value="volvo">Volvo</option>
+                      <option value="saab">Saab</option>
+                      <option value="mercedes">Mercedes</option>
+                      <option value="audi">Audi</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="inputName"> Category</label>
+                    <select
+                      id="category_id"
+                      name="category_id"
+                      class="form-control"
+                    >
+                      <option value="">Select one</option>
+                      <% response.forEach(function(data, index){ %>
+                      <option value="<%= data.id %>"><%= data.name %></option>
+                      <% } ) %>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="inputName"> Sub Category</label>
+                    <select
+                      id="sub_category_id"
+                      name="sub_category_id"
+                      class="form-control"
+                    ></select>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="inputName"> Price</label>
+                    <input
+                      type="text"
+                      id="price"
+                      name="price"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="inputName"> Image</label>
+                    <input
+                      type="file"
+                      id="banner"
+                      name="banner"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="inputName"> Description</label>
+                    <textarea
+                      id="editor"
+                      name="description"
+                      class="form-control"
+                    >
+                    </textarea>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <button id="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+  $(document).ready(function () {
+    $('#storeService').submit(function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      console.log('formData', formData);
+      $.ajax({
+        type: 'post',
+        url: '/store/service/data',
+        data: formData,
+        processData: false,
+        contentType: false,
+
+        success: function (response) {
+          console.log('dgdg');
+          $('#successMessage')
+            .removeClass('alert-danger') // Remove any previous error styling
+            .addClass('alert-success') // Add success styling (or customize as needed)
+            .text(response.message) // Display the message from the server
+            .fadeIn(); // Show the message
+
+          setTimeout(function () {
+            $('#successMessage').fadeOut(); // Hide the message after a delay (e.g., 3 seconds)
+          }, 3000); // Adjust the delay (in milliseconds) as needed
+        },
+        error: function (error) {
+          console.log('error', error);
+
+          $('#errorsMessage')
+            .removeClass('alert-danger') // Remove any previous error styling
+            .addClass('alert-danger') // Add success styling (or customize as needed)
+            .text(response.message) // Display the message from the server
+            .fadeIn(); // Show the message
+
+          setTimeout(function () {
+            $('#errorsMessage').fadeOut(); // Hide the message after a delay (e.g., 3 seconds)
+          }, 3000); // Adjust the delay (in milliseconds) as needed
+        },
+      });
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    $('#category_id').change(function () {
+      var category_id = $('#category_id').val();
+
+      $.ajax({
+        url: '/get/subcategory',
+        method: 'POST',
+        data: { category_id: category_id },
+        success: function (data) {
+          // Clear existing options
+          $('#sub_category_id').empty();
+          data.response.forEach((element) => {
+            $('#sub_category_id').append(
+              '<option value="' + element.id + '">' + element.name + '</option>'
+            );
+          });
+
+          // $.each(data, function (index, item) {});
+        },
+        error: function (error) {
+          console.error('Error fetching data: ', error);
+        },
+      });
+    });
+  });
+</script>

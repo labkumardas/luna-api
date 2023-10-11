@@ -1,0 +1,4 @@
+{
+    "apiPrefix": "/admin",
+    "port": "8088"
+}
